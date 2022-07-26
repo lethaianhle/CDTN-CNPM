@@ -11,4 +11,5 @@ public interface ThucDonService {
 
     List<ThucDonResponse> responseFindAll();
 
+    ThucDonResponse findById(Long id);
 }

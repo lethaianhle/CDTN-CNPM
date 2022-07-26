@@ -4,6 +4,7 @@ import com.app.dao.response.ThucDonResponse;
 import com.app.entity.Nhom;
 import com.app.entity.ThucDon;
 import com.app.exception.NhomNotFoundException;
+import com.app.exception.ThucDonNotFoundException;
 import com.app.repo.NhomRepo;
 import com.app.repo.ThucDonRepo;
 import com.app.service.ThucDonService;
@@ -52,6 +53,27 @@ public class ThucDonServiceImpl implements ThucDonService {
         }
 
         return thucDonResponses.size() > 0 ? thucDonResponses : null;
+    }
+
+    @Override
+    public ThucDonResponse findById(Long id) {
+        ThucDon thucDon = thucDonRepo.findById(id)
+                .orElseThrow(() -> new ThucDonNotFoundException("Không tìm thấy thực đơn với id: " + id));
+
+        Nhom nhom = nhomRepo.findById(thucDon.getNhom_id())
+                .orElseThrow(() -> new NhomNotFoundException("Không tìm thấy tên nhóm của thực đơn!"));
+
+        return ThucDonResponse.builder()
+                .id(thucDon.getId())
+                .description(thucDon.getDescription())
+                .discountPercent(thucDon.getDiscountPercent())
+                .priceAfterDiscount(thucDon.getPriceAfterDiscount())
+                .status(thucDon.getStatus())
+                .image(thucDon.getImage())
+                .name(thucDon.getName())
+                .price(thucDon.getPrice())
+                .nhom(nhom)
+                .build();
     }
 
 }
